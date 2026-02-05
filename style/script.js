@@ -49,10 +49,10 @@ const fullText3 = splitLines("I LOVE YOU", 3);
 const allTexts = [fullText1, fullText2, fullText3];
 
 // Font size cho từng đoạn text (dòng đầu to hơn)
-const fontSizes = [120, 80, 80]; // fullText1: 120px, fullText2 và fullText3: 80px
+const fontSizes = [180, 100, 80]; // fullText1: 180px, fullText2 (khung Hàn): 100px, fullText3: 80px
 const fontSize = 80; // Giữ lại để tương thích
 const fontFamily = "Arial";
-const lineHeights = [140, 100, 100]; // Line height tương ứng với font size
+const lineHeights = [210, 120, 100]; // Line height tương ứng (fullText2 tăng cho chữ to hơn)
 const lineHeight = 100; // Giữ lại để tương thích
 const bearX = 70;
 let bearY = canvas.height - 80;
@@ -328,12 +328,12 @@ function shootDot() {
   // bearY (canvas coord) = window.scrollY + window.innerHeight - 80 (approx bottom offset)
   const dynamicBearY = window.scrollY + window.innerHeight - 80;
 
-  const batch = 5;
+  const batch = 8; // Vừa phải: bắn 8 dots mỗi lần
   for (let i = 0; i < batch; i++) {
     const target = targetDots.shift();
     if (!target) return;
     const angle = Math.random() * Math.PI / 6 - Math.PI / 12;
-    const speed = 3 + Math.random() * 2;
+    const speed = 4 + Math.random() * 1.5; // Tốc độ vừa phải (4–5.5)
     dots.push({
       x: bearX + 40 + Math.random() * 20,
       y: dynamicBearY - 20 + Math.random() * 10,
@@ -483,7 +483,7 @@ function startShow() {
   // Resize canvas again to ensure correct dimensions after display:block
   resizeCanvas();
 
-  shootInterval = setInterval(shootDot, 30);
+  shootInterval = setInterval(shootDot, 22); // Tốc độ vừa phải (22ms)
   starInterval = setInterval(createShootingStar, 1500);
   animate();
 }
