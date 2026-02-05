@@ -263,10 +263,29 @@ function generateCharDots(char, x, y, textFontSize = fontSize) {
 
 function generateAllTargetDots() {
   const tempCtx = document.createElement('canvas').getContext('2d');
-  const currentFontSize = fontSizes[currentTextIndex] || fontSize;
+  let currentFontSize = fontSizes[currentTextIndex] || fontSize;
   const currentLineHeight = lineHeights[currentTextIndex] || lineHeight;
-  tempCtx.font = `bold ${currentFontSize}px ${fontFamily}`;
   const lines = allTexts[currentTextIndex];
+  
+  // Kiểm tra và tự động điều chỉnh fontSize nếu text quá dài
+  const maxWidth = canvas.width * 0.9; // Cho phép text chiếm 90% chiều rộng canvas
+  let needsResize = false;
+  
+  tempCtx.font = `bold ${currentFontSize}px ${fontFamily}`;
+  for (let line of lines) {
+    const lineWidth = tempCtx.measureText(line).width;
+    if (lineWidth > maxWidth) {
+      needsResize = true;
+      // Tính toán fontSize mới để text vừa với canvas
+      const scale = maxWidth / lineWidth;
+      currentFontSize = Math.floor(currentFontSize * scale * 0.95); // Giảm thêm 5% để có margin
+      break;
+    }
+  }
+  
+  // Cập nhật font với fontSize đã điều chỉnh
+  tempCtx.font = `bold ${currentFontSize}px ${fontFamily}`;
+  
   // Calculate startY based on current section frame
   const sectionTop = currentTextIndex * window.innerHeight;
   const startY = sectionTop + (window.innerHeight - lines.length * currentLineHeight) / 2;
