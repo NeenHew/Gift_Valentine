@@ -38,21 +38,24 @@ function splitLines(text, wordsPerLine) {
   return lines;
 }
 
-const fullText1 = splitLines("Dear Daeryeong", 3);
-// 2 dòng chữ hiển thị trong khung (tách bằng \n)
-const fullText2 = (
-  "너 덕분에 난 매일 행복해. 앞으로도 같이 있어줘.\n" +
-  "오늘도, 내일도, 항상 너랑 있고 싶어.💖"
+// Dùng \n để tách dòng rõ ràng, tránh lỗi hiển thị
+const fullText1 = (
+  "Anh làm cái này để tặng em\nngày Valentine"
 ).trim().split("\n");
-const fullText3 = splitLines("I LOVE YOU", 3);
+const fullText2 = (
+  "Valentine chúc em vui vẻ\nvà hạnh phúc"
+).trim().split("\n");
+const fullText3 = splitLines("Gửi em người con gái anh từng thương", 3);
 
 const allTexts = [fullText1, fullText2, fullText3];
 
-// Font size cho từng đoạn text (dòng đầu to hơn)
-const fontSizes = [180, 100, 80]; // fullText1: 180px, fullText2 (khung Hàn): 100px, fullText3: 80px
+// Font size cho từng đoạn text (to rõ, chiếm gần hết màn hình, tự scale nếu tràn)
+const fontSizes = [420, 340, 180]; // fullText1, fullText2 (to rõ), fullText3
 const fontSize = 80; // Giữ lại để tương thích
 const fontFamily = "Arial";
-const lineHeights = [210, 120, 100]; // Line height tương ứng (fullText2 tăng cho chữ to hơn)
+// Khoảng cách dòng: fullText2 gần nhau như fullText3, fullText1&3 giữ 1.12
+const lineHeightMultipliers = [0.7, 0.7, 0.7]; // fullText1, fullText2 (gần), fullText3
+const lineHeights = fontSizes.map((sz, i) => Math.round(sz * lineHeightMultipliers[i]));
 const lineHeight = 100; // Giữ lại để tương thích
 const bearX = 70;
 let bearY = canvas.height - 80;
@@ -268,7 +271,7 @@ function generateAllTargetDots() {
   const lines = allTexts[currentTextIndex];
   
   // Kiểm tra và tự động điều chỉnh fontSize nếu text quá dài
-  const maxWidth = canvas.width * 0.9; // Cho phép text chiếm 90% chiều rộng canvas
+  const maxWidth = canvas.width * 0.92; // Cho phép text chiếm 92% chiều rộng
   let needsResize = false;
   
   tempCtx.font = `bold ${currentFontSize}px ${fontFamily}`;
@@ -278,7 +281,7 @@ function generateAllTargetDots() {
       needsResize = true;
       // Tính toán fontSize mới để text vừa với canvas
       const scale = maxWidth / lineWidth;
-      currentFontSize = Math.floor(currentFontSize * scale * 0.95); // Giảm thêm 5% để có margin
+      currentFontSize = Math.floor(currentFontSize * scale * 0.98); // Giữ gần max để chữ to
       break;
     }
   }
@@ -286,15 +289,19 @@ function generateAllTargetDots() {
   // Cập nhật font với fontSize đã điều chỉnh
   tempCtx.font = `bold ${currentFontSize}px ${fontFamily}`;
   
-  // Calculate startY based on current section frame
+  // Căn giữa khung hình: tâm chữ trùng tâm viewport
   const sectionTop = currentTextIndex * window.innerHeight;
-  const startY = sectionTop + (window.innerHeight - lines.length * currentLineHeight) / 2;
+  const viewportCenterY = sectionTop + window.innerHeight / 2;
+  const blockCenterOffset = currentFontSize * 0.35 - (lines.length - 1) * currentLineHeight / 2;
+  const startY = viewportCenterY + blockCenterOffset;
 
+  const letterSpacing = currentFontSize * 0.03; // Khoảng cách giữa các chữ, tránh dính
   lines.forEach((line, lineIndex) => {
-    const lineWidth = tempCtx.measureText(line).width;
-    let xCursor = (canvas.width - lineWidth) / 2;
+    const numChars = line.replace(/\s/g, "").length;
+    const baseWidth = tempCtx.measureText(line).width;
+    const lineWidthTotal = baseWidth + Math.max(0, numChars - 1) * letterSpacing;
+    let xCursor = (canvas.width - lineWidthTotal) / 2;
     const y = startY + lineIndex * currentLineHeight;
-
     for (let char of line) {
       if (char === " ") {
         xCursor += tempCtx.measureText(" ").width;
@@ -304,7 +311,7 @@ function generateAllTargetDots() {
 
       const charDots = generateCharDots(char, xCursor, y, currentFontSize);
       targetDotsQueue.push(charDots);
-      xCursor += tempCtx.measureText(char).width;
+      xCursor += tempCtx.measureText(char).width + letterSpacing;
     }
   });
 }
