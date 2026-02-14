@@ -45,7 +45,7 @@ const fullText1 = (
 const fullText2 = (
   "Valentine chúc em vui vẻ\n" + "và hạnh phúc"
 ).trim().split("\n");
-const fullText3 = splitLines("I Love You", 3);
+const fullText3 = splitLines("I Love You ❤️", 3);
 
 const allTexts = [fullText1, fullText2, fullText3];
 
