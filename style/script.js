@@ -45,7 +45,7 @@ const fullText1 = (
 const fullText2 = (
   "Valentine chúc em vui vẻ\n" + "và hạnh phúc"
 ).trim().split("\n");
-const fullText3 = splitLines("I Love You ❤️", 3);
+const fullText3 = splitLines("I Love You", 7);
 
 const allTexts = [fullText1, fullText2, fullText3];
 
@@ -54,7 +54,7 @@ const fontSizes = [420, 340, 180]; // fullText1, fullText2 (to rõ), fullText3
 const fontSize = 80; // Giữ lại để tương thích
 const fontFamily = "Arial";
 // Khoảng cách dòng: fullText2 gần nhau như fullText3, fullText1&3 giữ 1.12
-const lineHeightMultipliers = [0.6, 0.6, 1.6]; // fullText1, fullText2 (gần), fullText3
+const lineHeightMultipliers = [0.5, 0.5, 1.5]; // fullText1, fullText2 (gần), fullText3
 const lineHeights = fontSizes.map((sz, i) => Math.round(sz * lineHeightMultipliers[i]));
 const lineHeight = 100; // Giữ lại để tương thích
 const bearX = 70;
