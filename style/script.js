@@ -43,7 +43,7 @@ const fullText1 = (
   "Anh làm này là để tặng Mai\n" + "ngày 8/3 nèee"
 ).trim().split("\n");
 const fullText2 = (
-  "8/3 chúc em vui vẻ\n" + "và hạnh phúc nhaaaa"
+  "8/3 chúc em vui vẻ\n" + "và hạnh phúc nhaaa"
 ).trim().split("\n");
 const fullText3 = splitLines("moa~ moa~", 7);
 
